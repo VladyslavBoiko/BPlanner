@@ -40,9 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalendarTasks\CalendarTask.cs" />
+    <Compile Include="CalendarTasks\EveryDayTask.cs" />
+    <Compile Include="CalendarTasks\EveryMonthTask.cs" />
+    <Compile Include="CalendarTasks\EveryYearTask.cs" />
+    <Compile Include="CalendarTasks\SingleUseTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CalendarTask.cs" />
     <Compile Include="TasksController.cs" />
+    <Compile Include="TasksFactory\EveryDayTaskCreator.cs" />
+    <Compile Include="TasksFactory\EveryMonthTaskCreator.cs" />
+    <Compile Include="TasksFactory\EveryYearTaskCreator.cs" />
+    <Compile Include="TasksFactory\ITasksCreator.cs" />
+    <Compile Include="TasksFactory\SingleUseTaskCreator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
