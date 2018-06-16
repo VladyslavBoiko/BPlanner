@@ -21,13 +21,9 @@ namespace Model
     [Serializable]
     public class TasksController
     {
-        private static TasksController tasksController = null;
+        private static TasksController tasksController;
 
-        private ObservableCollection<SingleUseTask> singleUseTasks;
-        private ObservableCollection<EveryDayTask> everyDayTasks;
-        private ObservableCollection<EveryMonthTask> everyMonthTasks;
-        private ObservableCollection<EveryYearTask> everyYearTasks;
-
+        readonly ObservableCollection<CalendarTask> calendarTasks;
 
         private TasksController()
         {
@@ -35,7 +31,7 @@ namespace Model
              * Realize DAL and Repository Pattern, 
              * then initilize collections
              */
-            singleUseTasks = new ObservableCollection<SingleUseTask>();
+            calendarTasks = new ObservableCollection<CalendarTask>();
             Task.WaitAll();
         }
 
@@ -49,53 +45,78 @@ namespace Model
             return tasksController;
         }
 
-        public async void Add(TypeOfTask typeOfTask, string name, DateTime? date, PriorityOfTask priorityOfTask = PriorityOfTask.Neutral, string timeOfBegin = null, string timeOfEnd = null)
+        public async Task AddAsync(TypeOfTask typeOfTask, string name, DateTime? date, PriorityOfTask priorityOfTask = PriorityOfTask.Neutral, string timeOfBegin = null, string timeOfEnd = null)
         {
-            ITasksCreator taskFactory;
+            ITasksCreator taskFactory = null;
 
             switch(typeOfTask)
             {
                 case TypeOfTask.SingleUseTask:
                     taskFactory = new SingleUseTaskCreator();
-                    await Task.Run(() => singleUseTasks.Add(taskFactory.Create(name, date, priorityOfTask, timeOfBegin, timeOfEnd) as SingleUseTask));
                     break;
                 case TypeOfTask.EveryDayTask:
                     taskFactory = new EveryDayTaskCreator();
-                    await Task.Run(() => everyDayTasks.Add(taskFactory.Create(name, date, priorityOfTask, timeOfBegin, timeOfEnd) as EveryDayTask));
                     break;
                 case TypeOfTask.EveryMonthTask:
                     taskFactory = new EveryMonthTaskCreator();
-                    await Task.Run(() => everyMonthTasks.Add(taskFactory.Create(name, date, priorityOfTask, timeOfBegin, timeOfEnd) as EveryMonthTask));
                     break;
                 case TypeOfTask.EveryYearTask:
                     taskFactory = new EveryYearTaskCreator();
-                    await Task.Run(() => everyYearTasks.Add(taskFactory.Create(name, date, priorityOfTask, timeOfBegin, timeOfEnd) as EveryYearTask));
                     break;
             }
+            await Task.Run(() => calendarTasks.Add(taskFactory.Create(name, date, priorityOfTask, timeOfBegin, timeOfEnd)));
         }
 
-        public async void Remove(CalendarTask calendarTask)
+        public async Task RemoveAsync(CalendarTask calendarTask)
         {
-            if (calendarTask is SingleUseTask)
+            await Task.Run(() => calendarTasks.Remove(calendarTask));
+        }
+
+        public async Task<ObservableCollection<CalendarTask>> GetTasksByTypeAsync(TypeOfTask typeOfTask)
+        {
+            ObservableCollection<CalendarTask> result = null;
+
+            switch (typeOfTask)
             {
-                await Task.Run(() => singleUseTasks.Remove(calendarTask as SingleUseTask));
-                return;
+                case TypeOfTask.SingleUseTask:
+                    result = await GetSingleUseTasksAsync();
+                    break;
+                case TypeOfTask.EveryDayTask:
+                    result = await GetEveryDayTasksAsync();
+                    break;
+                case TypeOfTask.EveryMonthTask:
+                    result = await GetEveryMonthTasksAsync();
+                    break;
+                case TypeOfTask.EveryYearTask:
+                    result = await GetEveryYearTasksAsync();
+                    break;
             }
-            if (calendarTask is EveryDayTask)
-            {
-                await Task.Run(() => everyDayTasks.Remove(calendarTask as EveryDayTask));
-                return;
-            }
-            if(calendarTask is EveryMonthTask)
-            {
-                await Task.Run(() => everyMonthTasks.Remove(calendarTask as EveryMonthTask));
-                return;
-            }
-            if(calendarTask is EveryYearTask)
-            {
-                await Task.Run(() => everyYearTasks.Remove(calendarTask as EveryYearTask));
-                return;
-            }
+
+            return result;
+        }
+
+        private async Task<ObservableCollection<CalendarTask>> GetSingleUseTasksAsync()
+        {
+            var result = await Task.Run(() => calendarTasks.Where(t => t is SingleUseTask));
+            return result as ObservableCollection<CalendarTask>;
+        }
+
+        private async Task<ObservableCollection<CalendarTask>> GetEveryDayTasksAsync()
+        {
+            var result = await Task.Run(() => calendarTasks.Where(t => t is EveryDayTask));
+            return result as ObservableCollection<CalendarTask>;
+        }
+
+        private async Task<ObservableCollection<CalendarTask>> GetEveryMonthTasksAsync()
+        {
+            var result = await Task.Run(() => calendarTasks.Where(t => t is EveryMonthTask));
+            return result as ObservableCollection<CalendarTask>;
+        }
+
+        private async Task<ObservableCollection<CalendarTask>> GetEveryYearTasksAsync()
+        {
+            var result = await Task.Run(() => calendarTasks.Where(t => t is EveryYearTask));
+            return result as ObservableCollection<CalendarTask>;
         }
     }
 }

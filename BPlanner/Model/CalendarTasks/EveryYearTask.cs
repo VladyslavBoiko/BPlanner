@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Model.CalendarTasks
 {
     [Serializable]
-    class EveryYearTask : CalendarTask
+    public class EveryYearTask : CalendarTask
     {
-        public override DateTime? Date
+        public sealed override DateTime? Date
         {
             get => date;
             set
@@ -20,7 +20,9 @@ namespace Model.CalendarTasks
             }
         }
 
-        public EveryYearTask(string name, DateTime? date, PriorityOfTask priorityOfTask = PriorityOfTask.Neutral, string timeOfBegin = null, string timeOfEnd = null) : base(name, date, priorityOfTask, timeOfBegin, timeOfEnd)
-        { }
+        public EveryYearTask(string name, DateTime? date, PriorityOfTask priorityOfTask = PriorityOfTask.Neutral, string timeOfBegin = null, string timeOfEnd = null) : base(name, priorityOfTask, timeOfBegin, timeOfEnd)
+        {
+            Date = date;
+        }
     }
 }

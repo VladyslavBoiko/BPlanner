@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 namespace Model.CalendarTasks
 {
     [Serializable]
-    class SingleUseTask : CalendarTask
+     class SingleUseTask : CalendarTask
     {
-        public override DateTime? Date { get => date; set => date = value; }
+        public sealed override DateTime? Date { get => date; set => date = value; }
 
-        public SingleUseTask(string name, DateTime? date, PriorityOfTask priorityOfTask = PriorityOfTask.Neutral, string timeOfBegin = null, string timeOfEnd = null) :base(name, date, priorityOfTask, timeOfBegin, timeOfEnd)
+        public SingleUseTask(string name, DateTime? date, PriorityOfTask priorityOfTask = PriorityOfTask.Neutral, string timeOfBegin = null, string timeOfEnd = null) :base(name, priorityOfTask, timeOfBegin, timeOfEnd)
         {
+            Date = date;
         }
     }
 }
