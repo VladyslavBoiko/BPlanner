@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    class BinSerializationDA : SerializationDA
+    public class BinSerializationDA : SerializationDA
     {
         readonly BinaryFormatter binaryFormatter;
 
-        public BinSerializationDA(string nameOfClass):base(nameOfClass)
+        public BinSerializationDA(string nameOfClassToSerialization):base(nameOfClassToSerialization)
         {
             binaryFormatter = new BinaryFormatter();
         }
@@ -34,7 +34,7 @@ namespace DAL
             }
             catch(FileNotFoundException)
             {
-                throw new FileNotFoundException("There is not such a file");
+                throw new InvalidOperationException("There is not such a file");
             }
             finally
             {

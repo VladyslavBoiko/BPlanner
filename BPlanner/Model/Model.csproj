@@ -53,5 +53,11 @@
     <Compile Include="TasksFactory\ITasksCreator.cs" />
     <Compile Include="TasksFactory\SingleUseTaskCreator.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{4e4c7b5c-bafb-4150-8c27-849285380170}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

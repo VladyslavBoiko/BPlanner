@@ -7,6 +7,7 @@ using System.Threading;
 using Model.CalendarTasks;
 using Model.TasksFactory;
 using System.Collections.ObjectModel;
+using DAL;
 
 namespace Model
 {
@@ -18,21 +19,33 @@ namespace Model
         EveryYearTask
     }
 
-    [Serializable]
     public class TasksController
     {
         private static TasksController tasksController;
-
         readonly ObservableCollection<CalendarTask> calendarTasks;
 
         private TasksController()
+        { 
+            calendarTasks = Task.Run(() => InitializeTasks(new BinSerializationDA(calendarTasks.GetType().ToString()))).Result;
+        }
+
+        private ObservableCollection<CalendarTask> InitializeTasks(IDataAccess wayToInitialize)
         {
-            /*
-             * Realize DAL and Repository Pattern, 
-             * then initilize collections
-             */
-            calendarTasks = new ObservableCollection<CalendarTask>();
-            Task.WaitAll();
+            ObservableCollection<CalendarTask> tasks = null;
+
+            try
+            {
+                tasks = (ObservableCollection<CalendarTask>)wayToInitialize.GetData();
+            }
+            catch(InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            if (tasks == null)
+                tasks = new ObservableCollection<CalendarTask>();
+
+            return tasks;
         }
 
         public static TasksController GetTasksController()

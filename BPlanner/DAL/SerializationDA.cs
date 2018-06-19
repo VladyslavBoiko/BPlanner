@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    abstract class SerializationDA : IDataAccess
+    public abstract class SerializationDA : IDataAccess
     {
         protected readonly string pathForFile;
 
-        protected SerializationDA(string nameOfClass)
+        protected SerializationDA(string nameOfClassToSerialization)
         {
-            pathForFile = GetPathForFile() + @"\" + nameOfClass + ".dat";
+            pathForFile = GetPathForFile() + @"\" + nameOfClassToSerialization + ".dat";
         }
 
         private string GetPathForFile()

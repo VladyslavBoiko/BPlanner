@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    interface IDataAccess
+    public interface IDataAccess
     {
         Object GetData();
         void SetData(Object data);
